@@ -1,3 +1,11 @@
 {
-  "conventionalCommits.scopes": ["Setup"]
+  "conventionalCommits.scopes": ["Setup", "Core"],
+  "cSpell.words": [
+    "disclamers",
+    "ethicality",
+    "mbed",
+    "textbox",
+    "timecodes",
+    "youtu"
+  ]
 }

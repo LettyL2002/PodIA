@@ -1,0 +1,349 @@
+I've covered animation libraries a lot
+on this channel and there's been a ton
+going on from new minimal ways of doing
+things to hacking it into Tailwind to
+all sorts of other Solutions but today's
+solution isn't actually a new solution
+it's an old one and it's not just any
+old one it's kind of become the standard
+for react frame or motion's kind of been
+the only real responsible way to have
+fancy animations in your apps for entry
+exit and all the fun transitions that we
+like to build framer motion is a
+phenomenal Library built by framer a
+company kind of trying to compete with
+figma but they're also trying to do
+Coden it's framer is a weird product
+framer motion is a great open-source
+library for react devs but framer isn't
+framer motion it's been really confusing
+for a while and it's also been very
+react specific today all of that changes
+because Matt from framer just left made
+motion its own full separate thing and
+they're now going to support every
+framework not just react I am so excited
+to dive into this with y'all it's a huge
+change for how we build animations and
+nice experiences on the web and I can't
+wait to show all of this but first a
+quick word from today's sponsor today's
+sponsor is me because I couldn't get an
+ad in time for this turns out having two
+plus videos a day is kind of hard to
+maintain sponsors for if you're
+interested in filling spots like this in
+the future getting your brand put in
+front of the most talented senior plus
+developers watching YouTube period let
+me know hit us up YouTube at T.G Fair
+motion is now independent introducing
+motion
+first some personal news next week will
+be my last at framer writing this feels
+pretty wild making framer motion has
+been the best job of my life to do so
+for six years with the best product team
+in the world both a massive learning
+experience and a privilege however this
+leades some news that I'm incredibly
+excited to share with framer's blessing
+and support framer motion is now
+completely independent I'm spinning it
+off into its own project to better serve
+the whole Community introducing motion
+what's changing there are two big
+changes to highlight the first is
+motion's brand new home here at motion.
+deev besides a fresh new design it
+finally has a much requested search
+excited to explore the page with you but
+also I I just noticed look at how the
+topnav blur effect works on things it
+turns them into like a grid like
+reflected like refracted glass they go
+so hard on these things unnecessarily
+it's so cool how are they doing that is
+that a PNG or yeah it's a mask pattern
+that they made as a background image
+radial radient programmed here with CSS
+these guys know their design and you'll
+see little things like that throughout
+all of framer and motions work it's
+super cool back to the article though
+the second big change is a request from
+the community for a long time users have
+asked to use frame motion outside of
+react either with vanilla JS or other
+Frameworks like View today motion
+becomes more than a react library with
+an amazing set of vanilla apis that
+bring motion's Hybrid engine and
+extensive feature set to everyone in the
+coming weeks and months more features
+from frame or motion will make their way
+to this new vanilla API and I'll be
+writing new integration guides that help
+people use them everywhere beyond that
+expect improved support and
+documentation a stronger Community into
+renewed focus on developer facing
+features why is this happening this news
+might surprise many but I think in
+context it's the natural and obvious
+next step for motion 6 years ago framer
+bought my project pop motion because
+they wanted a simple react API unlimited
+flexibility and smooth animations across
+all devices as s moved from prototyping
+into sites these animations only became
+more important because now they're being
+shared with millions of monthly visitors
+but motion also became wildly successful
+in its own right becoming the goto react
+animation solution with over 4.5 million
+weekly downloads on npm the number like
+like framer motion is so prolific it's
+kind of nuts also if somebody in cheat
+can remember there was another thing
+like this that somebody from framer
+broke off and made it's like animation
+dodev or something that I can't remember
+the name of anyways it's a part of
+framer but it's also a part from framer
+serving a much wider set of users it's
+kind of as they that like this Library
+exists as part of framer but its
+majority use exists well outside of it
+it always felt weird because this
+library was so prominent but it wasn't
+really funneling into framer success
+directly like they were it made the
+framer product more confusing for me
+honestly having them separate helps
+clarify what both are we feel like the
+best way to ensure motion's future as a
+core driver of animations on not just
+framer sites or just react sites but for
+all Sites is to spin out as an
+independent open source project for the
+community for motion the high demands of
+frameware in terms of capability and
+performance have made motion the product
+that it is today so frameware users can
+rest assur that their animations will
+continue to be powered by Motion in the
+future spinning out motions a bold move
+by framer and I'm super delighted that
+they're on board is motion's first
+sponsor huge I hope that this gets more
+sponsored this is a really important
+project so I just went down a fun Rabbit
+Hole trying to remember the name of
+something that I knew came out from the
+framer folks specifically the framer
+motion folks trying to make something
+that was
+not using JavaScript for as much of the
+animation and using the web animations
+API more because frame motion was built
+before a lot of those apis existed and a
+lot of the code there uses JS to do the
+animations motion one was announced in
+2021 and I remember this dropping and
+that's why I was so confused because I
+knew this happened and they had
+announced that they were working on a
+new minimal library that just did
+browser standard animations but this
+used to be what was on most .ev motion
+one now motion one is the new motion but
+if I um way back machine yeah this is
+what I was thinking emotion dodev used
+to be this which was Tiny size huge
+performance a new animation Library
+built on the web animations API I was
+really hyped when this dropped I thought
+it was super cool everything was really
+simple well made I was hyped also tiny
+compared to things like green sock even
+tinier when you compare it to OG motion
+but yeah I don't I think it's dead cuz
+when I found to the GitHub they archived
+this project funny enough yesterday
+which is interesting it seems like
+motion is now focused on the centralized
+main motion Library not one or any of
+these other tools I wish that they would
+call it what happened to one maybe they
+say what happened to it in the blog
+regardless motion is now its own
+separate library and I'm guessing all
+the learnings from there are going to
+come over to here so what's next
+honestly I have a long list of things I
+want to do the hard part will be picking
+what's first new API is built on
+emerging browser features like view
+transitions bringing the power of
+motions industry-leading layout engine
+to the new vanilla API highle components
+that are both beautiful and accessible
+better Dev tools plugins for popular
+design tools Etc realistically for
+motion to thrive I first need to make it
+sustainable if you or your company
+already finds value from it consider a
+sponsorship I know a lot of you
+companies are doing the OSS pledge now
+at least I hope so the open source
+pledge is a thing that was started by
+Century meant to Kickstart companies
+helping fund these open source projects
+it's a pledge that a company can take
+agreeing to put at least $2,000 per year
+per devit the company into open source
+all these companies have already
+contributed and are promising to
+continue so if you need places to throw
+that money if you're making the pledge
+this is a good place to apparently
+Tailwind has already sponsored them too
+which is really cool to see Tailwind
+plus motion is a nice combo so hyped to
+see them working together like that
+anyways whatever's next I'm beyond
+excited for the next chapter and if
+you're an existing motion one or frame
+motion user I hope you are excited too
+here's the next 6 years hype huge I want
+to see the new homepage though that
+killed motion one also the domain
+motion.
+devevo I don't get domain Envy much
+nowadays but that's so good that's up
+there with my image. engineering which I
+still haven't used for anything but
+we'll get there Motion makes animations
+simple fun and Limitless go beyond the
+browser with super smooth Springs layout
+animations timelines and much much more
+I'm sure if I scroll it will no oh so
+they respect accessibility settings like
+the request for reduced motion which is
+why nothing was moving on the page
+initially and when I went and toggled
+that setting suddenly everything started
+moving again and I bet if I hit that I
+have to refresh after yeah now it
+doesn't
+work now it does more we need to respect
+those settings anyways this is how
+simple the code is vanilla JavaScript
+you tell it the target you tell it what
+to do or using a motion. div in react
+same deal and this is how motion works
+it's it's alternatives to the Dom
+elements where you put motion dot in
+front a now motions JS layer can take
+over and it can identify when things are
+added and remove from the Dom to do all
+the things you might need to do one of
+those things that almost no other
+Library supports properly exit
+animations where removing something from
+the Dom won't just disappear it it will
+have an animation on its way out doing
+this in react sucks so hard because to
+fade out an element when it's removed
+you actually have to keep it in the
+virtual Dom and the real Dom for a bit
+do the animation and then when the
+animation is done you have to remove it
+it's one of the few things that the
+react mental model doesn't really work
+for entry animations are easy because
+when you render it for the first time
+you just have it fade in or do whatever
+but when you remove the element you have
+to have it stay there for a bit which is
+really really hard to do the way react
+Works motion just handles it and
+hopefully other Frameworks will get the
+benefit from this super super simple
+syntax as well like two day if I needed
+good exit animations on something I was
+building with react I don't know how I
+would do it without framer straight up I
+just have no idea it would be hellish
+layers of code keeping track of
+references and making sure things are
+properly removed once the I don't even
+I'm thinking about it and it is
+stressing me out so we're going to move
+on layout animations also very very
+helpful switching between different
+layouts now with view transitions in the
+browser you can diy things like this but
+before then not fun and this makes it
+way easier you also of course have
+gestures so when you move over this it
+does things and I can even grab it and
+drag it around and when dragging it
+makes it smaller all of that just baked
+in so
+nice and of course timelines very useful
+when you want to do multiple things in
+order so the unordered list so the list
+itself has to fade in and each item in
+it needs to start at y -20 and then move
+to zero staggered 2 seconds between each
+of them so nice so
+nice where this has to fade in then
+these have to run one at a time with a
+delay between them such nice syntax to
+draw describe really difficult
+things wow ail personally sponsored and
+linear already jumped on not
+surprising they have a whole gallery of
+cool things using it if you want to
+check it out and of course in case it
+wasn't
+clear I think I mentioned this before
+but in case I somehow forgot it's
+obviously all open source so you can go
+hop in here and play with all of the
+packages look at the code use the
+library and use the source to go make
+your own version so if you want to have
+this in spelt or angular or any other
+framework you have the pieces you can
+build it yourself now it's actually
+really really cool
+and having search in the docs finally is
+huge I can't believe they got away
+without this
+before and of course when you start
+typing in it the little animation the
+way it came
+up it's so
+good oh oh the best part of these sites
+are the little animation oh it's so nice
+I've always been pretty hyped about
+frame or motion haven't used it as much
+as I probably should have but now that I
+know it's being maintained this well in
+long term there's really cool stuff
+coming I'm more hyped than I've ever
+been does this mean I'm going to stop
+covering new cool animation libraries
+absolutely not yall love those videos
+but for now this is the pretty obvious
+easy recommendation if you're using
+react and you're building animations
+into your tools you probably should at
+least consider frame motion but now it's
+going to be around for a while I super
+hyped I hope you guys are as well until
+next time peace nerds
