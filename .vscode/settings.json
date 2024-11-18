@@ -1,12 +1,22 @@
 {
   "conventionalCommits.scopes": ["Setup", "Core"],
   "cSpell.words": [
+    "audiofile",
     "disclamers",
     "ethicality",
+    "gtts",
     "innovatively",
+    "KHTML",
     "mbed",
+    "moviepy",
+    "outtmpl",
+    "pymupdf",
+    "pytube",
     "textbox",
     "timecodes",
+    "transcripcion",
+    "Transcriptor",
     "youtu"
-  ]
+  ],
+  "python.analysis.extraPaths": ["./PodIA"]
 }
