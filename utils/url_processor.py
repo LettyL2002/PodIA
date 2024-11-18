@@ -6,15 +6,28 @@ import os
 from docs.youtube_processor import YoutubeProcessor
 
 
-class YouTubeDownloadProcessor:
-    def __init__(self, openai_api_key):
-        """Initialize processor with VideoProcessor instance"""
+class URLProcessor:
+    def __init__(self, openai_api_key: str) -> None:
+        """
+        Inicializa el procesador con una instancia de VideoProcessor.
+
+        Args:
+            openai_api_key (str): Clave de API de OpenAI para procesamiento de video.
+        """
         self.video_processor = VideoProcessor(openai_api_key)
         self.download_path = Path("../temp/")
         self.download_path.mkdir(parents=True, exist_ok=True)
 
-    def download_video(self, youtube_url):
-        """Download YouTube video"""
+    def download_video(self, youtube_url: str) -> str:
+        """
+        Descarga un video de YouTube.
+
+        Args:
+            youtube_url (str): URL del video de YouTube a descargar.
+
+        Returns:
+            str: Ruta al archivo de video descargado.
+        """
         try:
             ydl_opts = {
                 'format': 'best[ext=mp4]',
@@ -30,16 +43,28 @@ class YouTubeDownloadProcessor:
         except Exception as e:
             return f"Error en el procesamiento: {str(e)}"
 
-    def process_youtube_url(self, youtube_url, progress=gr.Progress()):
-        """Main processing function"""
+    def process_youtube_url(self, youtube_url: str, progress=gr.Progress()) -> str:
+        """
+        Procesa una URL de YouTube para obtener su transcripción.
+
+        Intenta obtener la transcripción directamente. Si no está disponible,
+        descarga y procesa el video para generar la transcripción.
+
+        Args:
+            youtube_url (str): URL del video de YouTube.
+            progress: Objeto de progreso de Gradio para actualizar el progreso.
+
+        Returns:
+            str: Transcripción del video o mensaje de error.
+        """
         video_id = YoutubeProcessor.get_video_id(youtube_url)
         if not video_id:
             return "URL inválida"
 
         try:
-            # First try to get transcript directly
+            # Primero intenta obtener la transcripción directamente
             transcript_text = YoutubeProcessor.download_transcript(
-                video_id, language=["en"])
+                video_id, language=["es"])
             if transcript_text:
                 return f"Transcripción obtenida directamente:\n\n{transcript_text}"
             else:
@@ -48,18 +73,18 @@ class YouTubeDownloadProcessor:
         except Exception as e:
             print(f"No se pudo obtener transcripción directa: {str(e)}")
             try:
-                # Download and process video if transcript not available
+                # Descarga y procesa el video si la transcripción no está disponible
                 print("Descargando video para procesamiento...")
                 progress(0.1, "Descargando video...")
                 video_path = self.download_video(youtube_url)
                 progress(0.5, "Video descargado. Procesando...")
 
-                # Process video using VideoProcessor
+                # Procesa el video usando VideoProcessor
                 transcript_path, transcript = self.video_processor.process_video(
                     video_path)
                 progress(1.0, "Procesamiento completado.")
 
-                # Clean up downloaded video
+                # Elimina el archivo de video descargado
                 os.remove(video_path)
 
                 return f"Transcripción generada por IA:\n\nArchivo guardado en: {transcript_path}\n\n{transcript}"
@@ -68,12 +93,12 @@ class YouTubeDownloadProcessor:
                 return f"Error en el procesamiento: {str(e)}"
 
 
-# ? Dev Purpose
+# Propósito de desarrollo
 if __name__ == "__main__":
     from utils.env_loader import load_environment_variables, OPENAI_API_KEY
     load_environment_variables()
     print(f"OPENAI_API_KEY: {OPENAI_API_KEY}")
-    processor = YouTubeDownloadProcessor(OPENAI_API_KEY)
+    processor = URLProcessor(str(OPENAI_API_KEY))
 
     interface = gr.Interface(
         fn=processor.process_youtube_url,

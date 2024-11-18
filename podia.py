@@ -1,134 +1,211 @@
-# main.py
+# future : Under Development
 import gradio as gr  # type: ignore
+from audio.video_processor import VideoProcessor
+from core.summary import SummaryGenerator
 from docs.pdf_processor import PDFProcessor
-from docs.youtube_processor import YoutubeProcessor
+from utils.url_processor import URLProcessor
 from utils.env_loader import load_environment_variables, OPENAI_API_KEY
 
 
-def create_enhanced_podcast_ui():
-    # Load environment variables
-    env_vars = load_environment_variables()
+class PodIA:
+    def __init__(self):
+        self.summary_generator = SummaryGenerator(OPENAI_API_KEY)
+        self.pdf_processor = PDFProcessor()
+        self.video_processor = VideoProcessor(OPENAI_API_KEY)
+        self.url_processor = URLProcessor(OPENAI_API_KEY)
+        self.theme = self._create_theme()
 
-    # Initialize processors
-    youtube_processor = YoutubeProcessor()
-    pdf_processor = PDFProcessor()
-    video_processor = VideoProcessor()
-    audio_processor = AudioProcessor()
-    podcast_generator = PodcastGenerator(env_vars["OPENAI_API_KEY"])
+    def _create_theme(self):
+        return gr.themes.Soft(
+            primary_hue="purple",
+            secondary_hue="indigo",
+            neutral_hue="slate",
+            font=[gr.themes.GoogleFont("Inter"), "system-ui", "sans-serif"]
+        ).set(
+            button_primary_background_fill="*primary_500",
+            button_primary_background_fill_hover="*primary_600",
+            button_primary_text_color="white",
+            block_label_text_size="sm",
+            block_title_text_size="lg",
+        )
 
-    theme = gr.themes.Soft(
-        primary_hue="purple",
-        secondary_hue="indigo",
-        neutral_hue="slate",
-        font=[gr.themes.GoogleFont("Inter"), "system-ui", "sans-serif"]
-    ).set(
-        button_primary_background_fill="*primary_500",
-        button_primary_background_fill_hover="*primary_600",
-        button_primary_text_color="white",
-        block_label_text_size="sm",
-        block_title_text_size="lg",
-    )
+    def process_input(self, input_type, content, progress=gr.Progress()):
+        progress(0.2, "Procesando entrada...")
 
-    with gr.Blocks(theme=theme, title="Generador de Podcasts con IA") as app:
-        with gr.Row():
+        if input_type == "PDF":
+            return self.pdf_processor.process_pdf(content)
+        elif input_type == "URL":
+            return self.url_processor.process_youtube_url(content, progress)
+        elif input_type == "Video/Audio":
+            return self.video_processor.process_media(content)
+
+        return "Por favor, seleccione un tipo de entrada válido y proporcione el contenido."
+
+    def process_content(self, input_type, content, voice1_name, voice2_name):
+        processed_content = self.process_input(input_type, content)
+        summary = self.summary_generator.generate_summary(processed_content)
+        script = {"status": "Script generation will be implemented soon"}
+        return processed_content, summary, script
+
+    def create_ui(self):
+        with gr.Blocks(theme=self.theme, title="🎙️ PodIA - Generador de Podcasts Inteligente", css="""
+        /* Enhance styles for better UI */
+        #pdf_input .wrap, #media_input .wrap {
+            max-width: 400px;
+            margin: auto;
+        }
+        .gradio-container {
+            font-family: 'Inter', sans-serif;
+        }
+        """) as app:
             gr.Markdown("""
-                # 🎙️ Generador de Podcasts con IA
-                Convierte cualquier contenido en una conversación dinámica entre dos personajes
+                # 🎙️ PodIA - Generador de Podcasts Inteligente
+                ### Transforma cualquier contenido en un podcast interactivo
+                
+                > **Nota**: Esta herramienta procesa contenido de diferentes fuentes y lo convierte en un formato de podcast dinámico.
             """)
 
-        with gr.Tabs():
-            with gr.TabItem("📝 Entrada de Contenido"):
-                with gr.Row():
-                    with gr.Column(scale=2):
-                        input_type = gr.Radio(
-                            choices=["PDF", "URL", "Video"],
-                            label="Tipo de Contenido",
-                            value="URL"
-                        )
+            with gr.Tabs():
+                with gr.TabItem("📝 Entrada de Contenido"):
+                    gr.Markdown("""
+                        ### 📝 Instrucciones:
+                        1. **Seleccione** el tipo de contenido que desea procesar 📄🌐🎥
+                        2. **Proporcione** el contenido según el tipo seleccionado
+                        3. **Configure** las voces para el podcast 🗣️
+                    """)
 
-                        with gr.Group():
-                            file_input = gr.File(
-                                label="Subir PDF/Video",
-                                visible=False,
-                                file_types=[".pdf", ".mp4",
-                                            ".avi", ".mov", ".mkv"]
-                            )
-                            text_input = gr.Textbox(
-                                label="URL",
-                                placeholder="Ingrese la URL del contenido o video de YouTube",
-                                lines=2
-                            )
+                    input_type = gr.Radio(
+                        choices=["📄 PDF", "🌐 URL", "🎥 Video/Audio"],
+                        label="Tipo de Contenido",
+                        value="🌐 URL",
+                        info="Seleccione el formato de su contenido de entrada"
+                    )
 
-                    with gr.Column(scale=1):
-                        with gr.Group():
-                            gr.Markdown("### Configuración de Voces")
+                    pdf_input = gr.File(
+                        label="📄 Subir PDF",
+                        file_types=[".pdf"],
+                        visible=False,
+                    )
+
+                    url_input = gr.Textbox(
+                        label="🌐 URL de YouTube",
+                        placeholder="Ej: https://www.youtube.com/watch?v=...",
+                        visible=True,
+                        info="Pegue la URL del video de YouTube que desea procesar"
+                    )
+
+                    media_input = gr.File(
+                        label="🎥 Subir Video/Audio",
+                        file_types=["video/*", "audio/*"],
+                        visible=False,
+                    )
+
+                    gr.Markdown("""
+                        ### 🗣️ Configuración de Voces
+                        Personalice los nombres de los personajes que participarán en el podcast
+                    """)
+
+                    with gr.Row():
+                        with gr.Column(scale=1):
                             voice1 = gr.Textbox(
-                                label="Nombre del Personaje 1",
-                                value="Ana"
+                                label="👤 Nombre del Personaje 1",
+                                value="Ana",
+                                info="Primer locutor del podcast"
                             )
+                        with gr.Column(scale=1):
                             voice2 = gr.Textbox(
-                                label="Nombre del Personaje 2",
-                                value="Carlos"
+                                label="👤 Nombre del Personaje 2",
+                                value="Carlos",
+                                info="Segundo locutor del podcast"
                             )
 
-                generate_btn = gr.Button(
-                    "🎙️ Generar Podcast", variant="primary")
+                    process_btn = gr.Button(
+                        "🎙️ Generar Podcast", variant="primary", scale=0.5)
 
-            with gr.TabItem("📊 Resultados"):
-                with gr.Row():
-                    with gr.Column():
-                        summary_output = gr.Textbox(
-                            label="Resumen del Contenido",
+                with gr.TabItem("📊 Resultados"):
+                    gr.Markdown("""
+                        ### 📊 Resultados del Procesamiento
+                        Aquí podrá ver el contenido procesado, el resumen generado y el guión del podcast.
+                    """)
+
+                    with gr.Accordion("📄 Contenido Extraído", open=False):
+                        content_output = gr.Textbox(
+                            label="Texto extraído del contenido original",
                             lines=5,
                             interactive=False
                         )
-                        script_output = gr.JSON(label="Guión del Podcast")
-                        audio_output = gr.Audio(
-                            label="Podcast Generado",
-                            type="filepath",
+
+                    with gr.Accordion("📝 Resumen", open=True):
+                        summary_output = gr.Textbox(
+                            label="Resumen procesado por IA",
+                            lines=5,
                             interactive=False
                         )
 
-        def process_content(input_type, content, file, voice1_name, voice2_name, progress=gr.Progress()):
-            progress(0.1, desc="Procesando entrada...")
-            text_content = transcript_processor.process_input(
-                input_type, content, file)
+                    with gr.Accordion("🎭 Guión del Podcast", open=True):
+                        script_output = gr.JSON(
+                            label="Guión generado para el podcast",
+                            visible=True
+                        )
 
-            progress(0.3, desc="Generando resumen...")
-            summary = podcast_generator.generate_summary(text_content)
+            gr.Markdown("""
+                ---
+                ### ℹ️ Información Adicional
+                - ⏳ El procesamiento puede tomar varios minutos dependiendo del tamaño del contenido
+                - 📂 Los archivos muy grandes pueden requerir más tiempo de procesamiento
+                - ✅ Para obtener mejores resultados, asegúrese de que el contenido sea claro y esté bien estructurado
+            """)
 
-            progress(0.5, desc="Generando guión...")
-            script = podcast_generator.generate_script(
-                summary, voice1_name, voice2_name)
+            def update_visibility(choice):
+                return (
+                    gr.update(visible=choice == "📄 PDF"),
+                    gr.update(visible=choice == "🌐 URL"),
+                    gr.update(visible=choice == "🎥 Video/Audio")
+                )
 
-            progress(0.7, desc="Generando voces...")
-            audio_path = audio_processor.generate_podcast(script)
+            def get_active_content(input_type, pdf_content, url_content, media_content):
+                content_map = {
+                    "PDF": pdf_content,
+                    "URL": url_content,
+                    "Video/Audio": media_content
+                }
+                return content_map.get(input_type)
 
-            progress(1.0, desc="¡Listo!")
-            return summary, script, audio_path
+            # Evento para cambiar visibilidad
+            input_type.change(
+                fn=update_visibility,
+                inputs=[input_type],
+                outputs=[pdf_input, url_input, media_input]
+            )
 
-        def update_input_visibility(input_type):
-            return {
-                text_input: input_type in ["URL", "Video"],
-                file_input: input_type in ["PDF", "Video"]
-            }
+            # Evento para procesar contenido
+            process_btn.click(
+                fn=lambda *args: self.process_content(
+                    args[0],  # input_type
+                    get_active_content(
+                        args[0], args[1], args[2], args[3]),  # content
+                    args[4],  # voice1
+                    args[5]   # voice2
+                ),
+                inputs=[
+                    input_type,
+                    pdf_input,
+                    url_input,
+                    media_input,
+                    voice1,
+                    voice2
+                ],
+                outputs=[content_output, summary_output, script_output]
+            )
 
-        input_type.change(
-            fn=update_input_visibility,
-            inputs=[input_type],
-            outputs=[file_input, text_input]
-        )
+        return app
 
-        generate_btn.click(
-            fn=process_content,
-            inputs=[input_type, text_input, file_input, voice1, voice2],
-            outputs=[summary_output, script_output, audio_output]
-        )
-
-    return app
+    def launch(self):
+        app = self.create_ui()
+        app.launch()
 
 
 if __name__ == "__main__":
     load_environment_variables()
-    app = create_enhanced_podcast_ui()
-    app.launch()
+    podia = PodIA()
+    podia.launch()
