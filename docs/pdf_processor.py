@@ -1,7 +1,6 @@
 # docs/pdf_processor.py
 import os
-from PyPDF2 import PdfReader
-from utils.env_loader import OPENAI_API_KEY
+from pypdf import PdfReader # type: ignore
 
 
 class PDFProcessor:
@@ -64,6 +63,7 @@ class PDFProcessor:
 # Para propósitos de desarrollo
 if __name__ == "__main__":
     import gradio as gr  # type: ignore
+    from utils.env_loader import OPENAI_API_KEY
     print("Iniciando la Interfaz del Procesador PDF...")
     print(f"OPENAI_API_KEY: {OPENAI_API_KEY}")
     processor = PDFProcessor()

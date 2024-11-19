@@ -3,6 +3,7 @@ import gradio as gr  # type: ignore
 import yt_dlp  # type: ignore
 from audio.video_processor import VideoProcessor
 import os
+import re
 from docs.youtube_processor import YoutubeProcessor
 
 
@@ -20,24 +21,34 @@ class URLProcessor:
 
     def download_video(self, youtube_url: str) -> str:
         """
-        Descarga un video de YouTube.
+        Descarga solo el audio de un video de YouTube.
 
         Args:
             youtube_url (str): URL del video de YouTube a descargar.
 
         Returns:
-            str: Ruta al archivo de video descargado.
+            str: Ruta al archivo de audio descargado.
         """
         try:
+            # First extract info without downloading
+            with yt_dlp.YoutubeDL({'quiet': True}) as ydl:
+                info = ydl.extract_info(youtube_url, download=False)
+                # Sanitize filename: remove special characters and spaces
+                safe_title = re.sub(r'[^\w_-]', '_', info['title'])
+
             ydl_opts = {
-                'format': 'best[ext=mp4]',
-                'outtmpl': str(self.download_path / '%(title)s.%(ext)s'),
+                'format': 'bestaudio/best',
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                }],
+                'outtmpl': str(self.download_path / f"{safe_title}"),
                 'quiet': True,
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(youtube_url, download=True)
-                video_path = ydl.prepare_filename(info)
+                ydl.download([youtube_url])
+                video_path = str(self.download_path / f"{safe_title}.mp3")
                 return video_path
 
         except Exception as e:
@@ -48,7 +59,7 @@ class URLProcessor:
         Procesa una URL de YouTube para obtener su transcripción.
 
         Intenta obtener la transcripción directamente. Si no está disponible,
-        descarga y procesa el video para generar la transcripción.
+        descarga y procesa el audio para generar la transcripción.
 
         Args:
             youtube_url (str): URL del video de YouTube.
@@ -73,19 +84,19 @@ class URLProcessor:
         except Exception as e:
             print(f"No se pudo obtener transcripción directa: {str(e)}")
             try:
-                # Descarga y procesa el video si la transcripción no está disponible
-                print("Descargando video para procesamiento...")
-                progress(0.1, "Descargando video...")
-                video_path = self.download_video(youtube_url)
-                progress(0.5, "Video descargado. Procesando...")
+                # Descargar y procesar el audio si la transcripción no está disponible
+                print("Descargando audio para procesamiento...")
+                progress(0.1, "Descargando audio...")
+                audio_path = self.download_video(youtube_url)
+                progress(0.5, "Audio descargado. Procesando...")
 
-                # Procesa el video usando VideoProcessor
-                transcript_path, transcript = self.video_processor.process_video(
-                    video_path)
+                # Procesa el audio usando VideoProcessor
+                transcript_path, transcript = self.video_processor.process_media(
+                    audio_path)
                 progress(1.0, "Procesamiento completado.")
 
-                # Elimina el archivo de video descargado
-                os.remove(video_path)
+                # Elimina el archivo de audio descargado
+                os.remove(audio_path)
 
                 return f"Transcripción generada por IA:\n\nArchivo guardado en: {transcript_path}\n\n{transcript}"
 

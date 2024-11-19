@@ -1,7 +1,9 @@
 {
-  "conventionalCommits.scopes": ["Setup", "Core"],
+  "conventionalCommits.scopes": ["Setup", "Core", "Tests"],
   "cSpell.words": [
+    "Astley",
     "audiofile",
+    "bestaudio",
     "disclamers",
     "ethicality",
     "gtts",
@@ -10,6 +12,9 @@
     "mbed",
     "moviepy",
     "outtmpl",
+    "pdfreader",
+    "postprocessors",
+    "preferredcodec",
     "pymupdf",
     "pytube",
     "textbox",
