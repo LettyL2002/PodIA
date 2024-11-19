@@ -1,6 +1,7 @@
 {
   "conventionalCommits.scopes": ["Setup", "Core", "Tests"],
   "cSpell.words": [
+    "anfitrion",
     "Astley",
     "audiofile",
     "bestaudio",
@@ -17,6 +18,8 @@
     "preferredcodec",
     "pymupdf",
     "pytube",
+    "Savinien",
+    "secuencialmente",
     "textbox",
     "timecodes",
     "transcripcion",

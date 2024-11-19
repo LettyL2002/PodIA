@@ -10,14 +10,16 @@ class SummaryGenerator:
         client (OpenAI): Cliente de OpenAI para realizar las peticiones a la API.
     """
 
-    def __init__(self, key: str) -> None:
+    def __init__(self, api_key: str) -> None:
         """
         Inicializa el generador de resúmenes.
 
         Args:
-            key (str): Clave de API de OpenAI.
+            api_key (str): Clave de API de OpenAI.
         """
-        self.client = OpenAI(api_key=key)
+        if not api_key:
+            raise ValueError("API key cannot be empty")
+        self.client = OpenAI(api_key=api_key)
 
     def generate_summary(self, text: str) -> str:
         """
@@ -30,12 +32,21 @@ class SummaryGenerator:
             str: Resumen estructurado que incluye tema principal, puntos clave y resumen para debate.
         """
         prompt = f"""
-        Analiza el siguiente texto y genera un resumen estructurado que incluya:
-        1. Tema principal
-        2. Puntos clave (máximo 10)
-        3. Resumen para debate
+        You’re a skilled podcast producer with a knack for transforming complex texts into engaging and entertaining summaries. You understand what captivates an audience and how to structure information for maximum impact. Your specialty is crafting summaries that not only inform but also spark lively discussions among listeners.
 
-        Texto a analizar:
+        Your task is to generate a summary of a text for an interesting and entertaining podcast. Please follow this structure:
+        1. Main topic, theme, or subject of the text,
+        2. Main ideas or the finality of the text, (maximum 3)
+        3. Key points or arguments (maximum 10)
+        4. Notable quotes or references (maximum 3),
+        5. Additional context or background information (if necessary),
+        6. Summary for discussion.
+
+        Ensure the summary is engaging, concise, and tailored for a podcast audience. The goal is to inform and entertain listeners while encouraging them to share their thoughts and opinions.
+
+        Ur response must be in Spanish language and should be at least 200 words long.
+
+        Text to summarize:
         {text}
         """
 

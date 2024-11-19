@@ -2,6 +2,7 @@
 import gradio as gr  # type: ignore
 from audio.video_processor import VideoProcessor
 from core.summary import SummaryGenerator
+from core.script import ScriptGenerator
 from docs.pdf_processor import PDFProcessor
 from utils.url_processor import URLProcessor
 from utils.env_loader import load_environment_variables, OPENAI_API_KEY
@@ -13,6 +14,7 @@ class PodIA:
         self.pdf_processor = PDFProcessor()
         self.video_processor = VideoProcessor(OPENAI_API_KEY)
         self.url_processor = URLProcessor(OPENAI_API_KEY)
+        self.script_generator = ScriptGenerator(OPENAI_API_KEY)
         self.theme = self._create_theme()
 
     def _create_theme(self):
@@ -41,11 +43,33 @@ class PodIA:
 
         return "Por favor, seleccione un tipo de entrada válido y proporcione el contenido."
 
-    def process_content(self, input_type, content, voice1_name, voice2_name):
-        processed_content = self.process_input(input_type, content)
-        summary = self.summary_generator.generate_summary(processed_content)
-        script = {"status": "Script generation will be implemented soon"}
-        return processed_content, summary, script
+    def process_content(self, input_type, content):
+        """Procesa el contenido secuencialmente: primero extrae el texto,
+        luego genera el resumen, y finalmente crea el guión
+
+        Args:
+            input_type (str): Tipo de contenido proporcionado por el usuario
+            content (str): Contenido proporcionado por el usuario
+        """
+        # Paso 1: Extraer texto del contenido
+        progress = gr.Progress()
+        progress(0.1, "Extrayendo texto...")
+        extracted_text = self.process_input(input_type, content, progress)
+        if not extracted_text:
+            return "Error al extraer texto", "", ""
+
+        # Paso 2: Generar resumen del texto extraído
+        progress(0.4, "Generando resumen...")
+        summary = self.summary_generator.generate_summary(extracted_text)
+        if not summary:
+            return extracted_text, "Error al generar resumen", ""
+
+        # Paso 3: Crear guión basado en el resumen
+        progress(0.7, "Creando guión...")
+        script = self.script_generator.generate_script(summary)
+        progress(1.0, "¡Proceso completado!")
+
+        return extracted_text, summary, script
 
     def create_ui(self):
         with gr.Blocks(theme=self.theme, title="🎙️ PodIA - Generador de Podcasts Inteligente", css="""
@@ -184,8 +208,6 @@ class PodIA:
                     args[0],  # input_type
                     get_active_content(
                         args[0], args[1], args[2], args[3]),  # content
-                    args[4],  # voice1
-                    args[5]   # voice2
                 ),
                 inputs=[
                     input_type,

@@ -60,7 +60,7 @@ class PDFProcessor:
         return output_file
 
 
-# Para propósitos de desarrollo
+#? Dev Purpose
 if __name__ == "__main__":
     import gradio as gr  # type: ignore
     from utils.env_loader import OPENAI_API_KEY
