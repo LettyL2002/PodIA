@@ -5,17 +5,21 @@ from dotenv import load_dotenv
 # Variable global para almacenar la clave API
 OPENAI_API_KEY = None
 
-# Inicializar variables de entorno cuando se importa el módulo
 
-def init_environment_variables(): return globals().update(
-    {"OPENAI_API_KEY": os.getenv("OPENAI_API_KEY")})
+def init_environment_variables():
+    # Load the .env file
+    project_root = Path(__file__).parent.parent.parent
+    env_path = project_root / '.env'
+    load_dotenv(dotenv_path=env_path, override=True)
+    # Update the global variable
+    globals().update({"OPENAI_API_KEY": os.getenv("OPENAI_API_KEY2")})
+
 
 init_environment_variables()
-
 # ? Ejemplo de cómo usar la variable OPENAI_API_KEY en otros archivos
 
 """
-    # ? from utils.env_loader import OPENAI_API_KEY 
+    # ? from utils.env_loader import OPENAI_API_KEY
 
     #* Usar la variable OPENAI_API_KEY
     #? print(OPENAI_API_KEY)
@@ -36,11 +40,17 @@ def load_environment_variables() -> dict:
     # Ruta al archivo .env
     env_path = project_root / '.env'
 
-    # Cargar el archivo .env
-    load_dotenv(dotenv_path=env_path)
+    try:
+        # Cargar el archivo .env
+        load_dotenv(dotenv_path=env_path, override=True)
 
-    # Establecer la variable global
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+        # Establecer la variable global
+        OPENAI_API_KEY = os.getenv("OPENAI_API_KEY2")
+
+    except Exception as e:
+        print(f"❌ Error cargando el archivo .env: {str(e)}")
+
+    globals().update({"OPENAI_API_KEY": os.getenv("OPENAI_API_KEY2")})
 
     # Devolver un diccionario solo con OPENAI_API_KEY
     return {"OPENAI_API_KEY": OPENAI_API_KEY}

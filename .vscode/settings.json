@@ -1,17 +1,23 @@
 {
-  "conventionalCommits.scopes": ["Setup", "Core", "Tests"],
+  "conventionalCommits.scopes": ["Setup", "Core", "Tests", "Merge"],
   "cSpell.words": [
+    "addinivalue",
     "anfitrion",
     "Astley",
     "audiofile",
+    "audiosegment",
+    "autoplay",
+    "dotenv",
     "bestaudio",
     "disclamers",
-    "dotenv",
+    "enumarate",
     "ethicality",
     "gtts",
+    "IAUI",
     "innovatively",
     "KHTML",
     "mbed",
+    "minimalista",
     "moviepy",
     "outtmpl",
     "pdfreader",
@@ -21,11 +27,15 @@
     "pytube",
     "Savinien",
     "secuencialmente",
+    "testid",
     "textbox",
     "timecodes",
     "transcripcion",
     "Transcriptor",
     "youtu"
   ],
-  "python.analysis.extraPaths": ["./PodIA"]
+  "python.analysis.extraPaths": ["./PodIA"],
+  "python.testing.pytestArgs": ["tests"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }

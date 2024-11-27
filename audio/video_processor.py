@@ -3,10 +3,11 @@ import re
 import moviepy.editor as mp  # type: ignore
 from openai import OpenAI
 from pathlib import Path
+from utils.constants import TRANSCRIPT_MODEL
 
 
 class VideoProcessor:
-    def __init__(self, openai_api_key):
+    def __init__(self, openai_api_key, transcript_model=TRANSCRIPT_MODEL) -> None:
         """
         Inicializa el procesador de video con la API key de OpenAI
 
@@ -14,7 +15,8 @@ class VideoProcessor:
             openai_api_key (str): API key de OpenAI
         """
         self.client = OpenAI(api_key=openai_api_key)
-        self.transcript_path = Path("../assets/docs/transcript/video")
+        self.transcript_path = Path("assets/docs/transcript/video")
+        self.transcript_model = transcript_model
 
         # Crear el directorio si no existe
         self.transcript_path.mkdir(parents=True, exist_ok=True)
@@ -56,7 +58,7 @@ class VideoProcessor:
         print(f"Transcribiendo audio de {audio_path}")
         with open(audio_path, "rb") as audio_file:
             transcript = self.client.audio.transcriptions.create(
-                model="whisper-1",
+                model=self.transcript_model,
                 file=audio_file
             )
         return transcript.text
@@ -138,6 +140,11 @@ class VideoProcessor:
         with open(output_file, "w", encoding="utf-8") as f:
             f.write(transcript)
         return str(output_file)
+
+    def update_model(self, new_model: str) -> None:
+        """Updates the transcript model being used"""
+        self.transcript_model = new_model
+        print(f"Updated transcript model to: {new_model}")
 
 
 # ? Dev Purpose

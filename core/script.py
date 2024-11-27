@@ -2,6 +2,7 @@ from openai import OpenAI
 from typing import List, Tuple
 from core.characters.anfitrion import Anfitrion
 from core.characters.participante1 import Participante1
+from utils.constants import SCRIPT_MODEL, DEFAULT_NUM_EXCHANGES
 
 
 class ScriptGenerator:
@@ -16,6 +17,12 @@ class ScriptGenerator:
         self.conversation: List[Tuple[str, str]] = []
         self.anfitrion_messages: List[str] = []
         self.participante_messages: List[str] = []
+        self.model = SCRIPT_MODEL
+
+    def update_model(self, new_model: str) -> None:
+        """Updates the script generation model being used"""
+        self.model = new_model
+        print(f"Updated script model to: {new_model}")
 
     def _initial_anfitrion_response(self, summary: str) -> str:
         try:
@@ -45,7 +52,7 @@ class ScriptGenerator:
     def _generate_anfitrion_response(self, prompt: str) -> str:
         """Genera una respuesta usando la instancia de OpenAI del anfitrión."""
         response = self.anfitrion_ai.chat.completions.create(
-            model="gpt-4o-mini",
+            model=self.model,  # Use the instance model
             messages=[
                 {"role": "system", "content": self.anfitrion.anfitrion_prompt()},
                 {"role": "user", "content": prompt}]
@@ -81,14 +88,14 @@ class ScriptGenerator:
     def _generate_participante_response(self, prompt: str) -> str:
         """Genera una respuesta usando la instancia de OpenAI del participante."""
         response = self.participante_ai.chat.completions.create(
-            model="gpt-4o-mini",
+            model=self.model,  # Use the instance model
             messages=[
                 {"role": "system", "content": self.participante.participante1_prompt()},
                 {"role": "user", "content": prompt}]
         )
         return str(response.choices[0].message.content)
 
-    def generate_script(self, summary: str, num_exchanges: int = 2) -> str:
+    def generate_script(self, summary: str, num_exchanges: int = DEFAULT_NUM_EXCHANGES) -> str:
         """Genera un guion de podcast completo."""
 
         # Generar respuesta inicial del anfitrión
@@ -144,11 +151,37 @@ class ScriptGenerator:
         return self.conversation
 
     def _format_script(self) -> str:
-        """Formatea la conversación en un guion legible."""
-        script = "GUION DEL PODCAST\n\n"
+        """Formatea la conversación en un formato JSON legible."""
+        import json
+
+        # Create a list to store the dialogue entries
+        dialogue = []
+
         for speaker, text in self.conversation:
-            script += f"{speaker}: {text}\n\n"
-        return script
+            # Extract character name from text if present
+            if '[' in text and ']' in text:
+                name_start = text.find('[') + 1
+                name_end = text.find(']')
+                name = text[name_start:name_end]
+                message = text[name_end + 1:].strip()
+            else:
+                name = speaker
+                message = text.strip()
+
+            # Add the entry to dialogue
+            dialogue.append({
+                "character": name,
+                "message": message
+            })
+
+        # Create the final JSON structure with the theme as the title
+        script_json = {
+            "title": "GUION DEL PODCAST",
+            "dialogue": dialogue
+        }
+
+        # Return formatted JSON with proper indentation
+        return json.dumps(script_json, ensure_ascii=False, indent=2)
 
 
 # ? Dev Purpose
