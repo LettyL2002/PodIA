@@ -1,5 +1,5 @@
 {
-  "conventionalCommits.scopes": ["Setup", "Core", "Tests"],
+  "conventionalCommits.scopes": ["Setup", "Core", "Tests", "Merge"],
   "cSpell.words": [
     "addinivalue",
     "anfitrion",
@@ -7,6 +7,7 @@
     "audiofile",
     "audiosegment",
     "autoplay",
+    "dotenv",
     "bestaudio",
     "disclamers",
     "enumarate",
