@@ -15,8 +15,8 @@ class URLProcessor:
         Args:
             openai_api_key (str): Clave de API de OpenAI para procesamiento de video.
         """
-        self.video_processor = VideoProcessor(openai_api_key)
-        self.download_path = Path("../temp/")
+        self.video_processor = VideoProcessor(openai_api_key , transcript_model = "whisper-1")
+        self.download_path = Path("temp/")
         self.download_path.mkdir(parents=True, exist_ok=True)
 
     def download_video(self, youtube_url: str) -> str:

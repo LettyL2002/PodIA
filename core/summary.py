@@ -1,5 +1,6 @@
 from openai import OpenAI
 from utils.env_loader import OPENAI_API_KEY, load_environment_variables
+from utils.constants import SUMMARY_MODEL
 
 
 class SummaryGenerator:
@@ -20,6 +21,12 @@ class SummaryGenerator:
         if not api_key:
             raise ValueError("API key cannot be empty")
         self.client = OpenAI(api_key=api_key)
+        self.model = SUMMARY_MODEL
+
+    def update_model(self, new_model: str) -> None:
+        """Updates the summary model being used"""
+        self.model = new_model
+        print(f"Updated summary model to: {new_model}")
 
     def generate_summary(self, text: str) -> str:
         """
@@ -51,7 +58,7 @@ class SummaryGenerator:
         """
 
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=self.model,  # Use the instance model
             messages=[
                 {"role": "system", "content": "Eres un asistente experto en análisis y resumen de textos enfocado en generar resúmenes interesantes y estructurados para debates."},
                 {"role": "user", "content": prompt}

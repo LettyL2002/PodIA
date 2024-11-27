@@ -90,7 +90,7 @@ class YoutubeProcessor:
         file_name = re.sub(r'[\\/*?:"<>|]', '', file_name)
 
         # Crea el directorio si no existe
-        save_dir = Path("../assets/docs/transcript/web/")
+        save_dir = Path("assets/docs/transcript/web/")
         os.makedirs(save_dir, exist_ok=True)
 
         # Guarda el archivo en el directorio especificado

@@ -13,7 +13,7 @@ class PDFProcessor:
 
     def __init__(self):
         """Inicializa el procesador PDF y crea el directorio de salida si no existe."""
-        self.output_path = "../assets/docs/transcript/pdf/"
+        self.output_path = "assets/docs/transcript/pdf/"
         os.makedirs(self.output_path, exist_ok=True)
 
     def extract_text(self, pdf_file: str) -> str:
