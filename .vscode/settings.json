@@ -1,5 +1,11 @@
 {
-  "conventionalCommits.scopes": ["Setup", "Core", "Tests", "Merge"],
+  "conventionalCommits.scopes": [
+    "Setup",
+    "Core",
+    "Tests",
+    "Merge",
+    "Task"
+  ],
   "cSpell.words": [
     "addinivalue",
     "anfitrion",
@@ -34,8 +40,12 @@
     "Transcriptor",
     "youtu"
   ],
-  "python.analysis.extraPaths": ["./PodIA"],
-  "python.testing.pytestArgs": ["tests"],
+  "python.analysis.extraPaths": [
+    "./PodIA"
+  ],
+  "python.testing.pytestArgs": [
+    "tests"
+  ],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true
 }

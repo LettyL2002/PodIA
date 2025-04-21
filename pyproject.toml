@@ -15,6 +15,7 @@ requests = "^2.32.3"
 moviepy = "^1.0.3"
 yt-dlp = "^2024.11.18"
 pypdf = "^5.1.0"
+colorama = "^0.4.6"
 
 [tool.poetry.group.dev.dependencies]
 python-dotenv = "^1.0.1"
