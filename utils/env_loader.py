@@ -1,6 +1,6 @@
 from pathlib import Path
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv 
 
 # Variable global para almacenar la clave API
 OPENAI_API_KEY = None
@@ -12,7 +12,7 @@ def init_environment_variables():
     env_path = project_root / '.env'
     load_dotenv(dotenv_path=env_path, override=True)
     # Update the global variable
-    globals().update({"OPENAI_API_KEY": os.getenv("OPENAI_API_KEY2")})
+    globals().update({"OPENAI_API_KEY": os.getenv("OPENAI_API_KEY")})
 
 
 init_environment_variables()
